@@ -91,6 +91,8 @@
     .nav-links a:hover { color: var(--white); }
     .nav-links a:hover::after { transform: scaleX(1); }
     .nav-cta {
+      position: relative;
+      overflow: hidden;
       background: var(--accent) !important;
       color: var(--white) !important;
       padding: 0.45rem 1.1rem;
@@ -99,6 +101,7 @@
       transition: opacity 0.2s, transform 0.2s !important;
     }
     .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+    .nav-cta:active { transform: translateY(0) scale(0.95); }
     .nav-cta::after { display: none !important; }
 
     /* ─── HAMBURGER ─── */
@@ -208,6 +211,8 @@
       display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
     }
     .btn-primary {
+      position: relative;
+      overflow: hidden;
       background: linear-gradient(135deg, var(--accent), #9d50f7);
       color: var(--white);
       padding: 0.8rem 2rem;
@@ -218,7 +223,10 @@
       box-shadow: 0 4px 24px var(--glow);
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,108,252,0.4); }
+    .btn-primary:active { transform: translateY(0) scale(0.95); }
     .btn-outline {
+      position: relative;
+      overflow: hidden;
       background: transparent;
       color: var(--text);
       padding: 0.8rem 2rem;
@@ -229,6 +237,7 @@
       transition: all 0.25s;
     }
     .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .btn-outline:active { transform: translateY(0) scale(0.95); }
 
     /* ─── SECTIONS ─── */
     section { padding: 6rem 6vw; position: relative; z-index: 1; }
@@ -456,6 +465,8 @@
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
     .btn-submit {
+      position: relative;
+      overflow: hidden;
       width: 100%;
       background: linear-gradient(135deg, var(--accent), #9d50f7);
       color: var(--white);
@@ -468,6 +479,7 @@
       margin-top: 0.4rem;
     }
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--glow); }
+    .btn-submit:active { transform: translateY(0) scale(0.97); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     .form-status {
@@ -517,7 +529,58 @@
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ─── RESPONSIVE ─── */
+    /* ─── RIPPLE EFFECT ─── */
+    .btn-primary, .btn-outline, .btn-submit, .nav-cta {
+      transition: transform 0.15s ease, box-shadow 0.25s, opacity 0.2s, border-color 0.25s, color 0.25s;
+    }
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      transform: scale(0);
+      animation: rippleEffect 0.6s ease-out;
+      pointer-events: none;
+    }
+    @keyframes rippleEffect {
+      to { transform: scale(3.5); opacity: 0; }
+    }
+
+    /* ─── BUTTON POP-IN ON PAGE LOAD ─── */
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.85) translateY(10px); }
+      60% { opacity: 1; transform: scale(1.03) translateY(-2px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .hero-actions .btn-primary,
+    .hero-actions .btn-outline {
+      animation: popIn 0.6s ease both;
+    }
+    .hero-actions .btn-outline { animation-delay: 0.12s; }
+
+    /* ─── CARD SMOOTH POP ON HOVER ─── */
+    .skill-card, .about-card, .contact-card {
+      transition: border-color 0.25s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+    }
+    .skill-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(124,108,252,0.18);
+    }
+    .contact-card:hover {
+      transform: translateY(-4px) scale(1.015);
+      border-color: var(--accent);
+      box-shadow: 0 10px 24px rgba(124,108,252,0.15);
+    }
+
+    /* ─── FORM INPUT POP FOCUS ─── */
+    .form-group input, .form-group textarea {
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      transform: scale(1.01);
+      box-shadow: 0 0 0 3px var(--glow);
+    }
+
+
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .hamburger { display: flex; }
@@ -686,6 +749,7 @@
         </div>
         <div class="skill-tags">
           <span class="tag">Web Development</span>
+          <span class="tag">Video Editor</span>
           <span class="tag">Client Projects</span>
           <span class="tag">Tech Support</span>
           <span class="tag">Problem Solving</span>
@@ -754,6 +818,7 @@
                 <h3>Freelance Experience</h3>
                 <ul>
                   <li>Web development for clients</li>
+                  <li>Video editing for clients</li>
                   <li>Technical support & solutions</li>
                   <li>Digital tools and automation</li>
                 </ul>
@@ -877,6 +942,58 @@
 
   <!-- ── SCRIPTS ── -->
   <script>
+    /* --- CLICK SOUNDS (different tones per button type) --- */
+    let audioCtx;
+    function playTone(freqStart, freqEnd, duration, volume) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freqStart, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freqEnd, audioCtx.currentTime + duration);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+    function playClickSound(type) {
+      if (type === 'primary')      playTone(880, 440, 0.12, 0.14);   // bright pop
+      else if (type === 'outline') playTone(600, 300, 0.10, 0.10);   // soft click
+      else if (type === 'submit')  playTone(700, 1000, 0.15, 0.13);  // rising confirm
+      else if (type === 'nav')     playTone(750, 500, 0.08, 0.10);   // quick tick
+      else                          playTone(700, 300, 0.08, 0.10);   // default
+    }
+    function createRipple(e, el) {
+      const rect = el.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      const size = Math.max(rect.width, rect.height);
+      const x = (e.clientX || rect.left + rect.width/2) - rect.left - size/2;
+      const y = (e.clientY || rect.top + rect.height/2) - rect.top - size/2;
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      el.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+    document.addEventListener('click', function(e) {
+      const target = e.target.closest('a, button');
+      if (!target) return;
+      let type = 'default';
+      if (target.classList.contains('btn-primary')) type = 'primary';
+      else if (target.classList.contains('btn-outline')) type = 'outline';
+      else if (target.classList.contains('btn-submit')) type = 'submit';
+      else if (target.classList.contains('nav-cta')) type = 'nav';
+      playClickSound(type);
+      if (['btn-primary','btn-outline','btn-submit','nav-cta'].some(c => target.classList.contains(c))) {
+        createRipple(e, target);
+      }
+    });
+
     /* --- HAMBURGER --- */
     const btn = document.getElementById('hamburger');
     const menu = document.getElementById('mobileMenu');
