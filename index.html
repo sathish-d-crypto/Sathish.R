@@ -524,10 +524,36 @@
     /* ─── SCROLL ANIMATION ─── */
     .reveal {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
+      transform: translateY(36px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* stagger children inside grids */
+    .skills-grid .skill-card   { transition-delay: calc(var(--i,0) * 80ms); }
+    .contact-info .contact-card { transition-delay: calc(var(--i,0) * 80ms); }
+
+    /* slide from left */
+    .reveal-left {
+      opacity: 0; transform: translateX(-40px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    /* slide from right */
+    .reveal-right {
+      opacity: 0; transform: translateX(40px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* scale up */
+    .reveal-scale {
+      opacity: 0; transform: scale(0.88);
+      transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
 
     /* ─── RIPPLE EFFECT ─── */
     .btn-primary, .btn-outline, .btn-submit, .nav-cta {
@@ -581,6 +607,97 @@
     }
 
 
+
+
+    /* ─── PAGE LOAD CURTAIN ─── */
+    #page-loader {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #page-loader.hide { opacity: 0; visibility: hidden; }
+    .loader-ring {
+      width: 56px; height: 56px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── PARTICLES CANVAS ─── */
+    #particles { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* ─── TYPING CURSOR ─── */
+    .typed-cursor { display: inline-block; width: 2px; height: 1em; background: var(--accent2); margin-left: 2px; vertical-align: middle; animation: blink 0.9s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ─── NAV ACTIVE LINK ─── */
+    .nav-links a.active { color: var(--white); }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ─── FLOATING BADGE ─── */
+    .hero-badge { animation: floatBadge 3s ease-in-out infinite; }
+    @keyframes floatBadge { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    /* ─── SECTION TITLE UNDERLINE DRAW ─── */
+    .section-title { position: relative; display: inline-block; }
+    .section-title::after {
+      content: '';
+      position: absolute; bottom: -6px; left: 0;
+      height: 3px; width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s;
+    }
+    .section-title.line-visible::after { width: 55%; }
+
+    /* ─── TAG HOVER POP ─── */
+    .tag {
+      transition: background 0.2s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      cursor: default;
+    }
+    .tag:hover { background: rgba(124,108,252,0.28); transform: translateY(-3px) scale(1.08); box-shadow: 0 4px 14px rgba(124,108,252,0.22); }
+
+    /* ─── ABOUT CARD HOVER ─── */
+    .about-card { transition: border-color 0.3s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s; }
+    .about-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 16px 36px rgba(124,108,252,0.15); }
+
+    /* ─── RESUME VIEWER ─── */
+    .resume-viewer { transition: box-shadow 0.3s, transform 0.3s; }
+    .resume-viewer:hover { box-shadow: 0 20px 48px rgba(124,108,252,0.13); transform: translateY(-3px); }
+
+    /* ─── FOOTER LOGO FLOAT ─── */
+    .footer-logo { animation: floatBadge 4s ease-in-out infinite; }
+
+    /* ─── HERO ENTRANCE ─── */
+    @keyframes heroEntrance {
+      0%  { opacity:0; transform: translateY(44px) scale(0.95); }
+      100%{ opacity:1; transform: translateY(0)    scale(1); }
+    }
+    .hero-inner { animation: heroEntrance 1s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.6s; }
+
+    /* ─── GLOW ORBIT ─── */
+    @keyframes orbit {
+      0%  { transform: translate(-50%,-50%) scale(1);    opacity:0.55; }
+      33% { transform: translate(-47%,-53%) scale(1.1);  opacity:0.9; }
+      66% { transform: translate(-53%,-47%) scale(0.94); opacity:0.65; }
+      100%{ transform: translate(-50%,-50%) scale(1);    opacity:0.55; }
+    }
+    .hero-glow { animation: orbit 7s ease-in-out infinite; }
+
+    /* ─── SKILL ICON SPIN ON HOVER ─── */
+    .skill-icon { transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    .skill-card:hover .skill-icon { transform: rotate(12deg) scale(1.2); }
+
+    /* ─── STAGGER REVEALS ─── */
+    .reveal-left  { opacity:0; transform:translateX(-44px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal-right { opacity:0; transform:translateX(44px);  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal-scale { opacity:0; transform:scale(0.86);        transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+    .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible { opacity:1; transform:none; }
+
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .hamburger { display: flex; }
@@ -594,6 +711,9 @@
   </style>
 </head>
 <body>
+
+  <!-- ── PAGE LOADER ── -->
+  <div id="page-loader"><div class="loader-ring"></div></div>
 
   <!-- ── NAVBAR ── -->
   <nav>
@@ -619,14 +739,12 @@
 
   <!-- ── HERO ── -->
   <section id="hero">
+    <canvas id="particles"></canvas>
     <div class="hero-glow"></div>
     <div class="hero-inner reveal">
       <div class="hero-badge"><span></span> Open to Opportunities</div>
       <h1>Hi, I'm <span class="accent-text">Sathish</span></h1>
-      <p class="hero-sub">
-        BSc Computer Science Graduate · Cybersecurity Enthusiast · AI & Freelance Developer
-        based in Salem, Tamil Nadu.
-      </p>
+      <p class="hero-sub" id="hero-sub"></p>
       <div class="hero-actions">
         <a href="#contact" class="btn-primary">Get In Touch</a>
         <a href="#resume"  class="btn-outline">View Resume</a>
@@ -645,7 +763,7 @@
       cybersecurity, Linux environments, and modern UI/UX tools — always eager to learn and build.
     </p>
     <div class="about-grid">
-      <div class="about-card reveal">
+      <div class="about-card reveal-left">
         <h3>🎓 Education</h3>
         <p>Bachelor of Science in Computer Science<br/>
            <strong style="color:var(--white)">Salem Christian College of Arts and Science</strong><br/>
@@ -656,7 +774,7 @@
           <div class="info-item"><span class="icon">🌐</span><div><strong>Languages</strong><span> — English, Tamil, Sourahtra</span></div></div>
         </div>
       </div>
-      <div class="about-card reveal">
+      <div class="about-card reveal-right">
         <h3>💡 Professional Summary</h3>
         <p>
           Recent BSc Computer Science graduate with strong foundational knowledge in
@@ -1006,17 +1124,102 @@
       menu.classList.remove('open');
     }
 
-    /* --- SCROLL REVEAL --- */
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
+    /* --- PAGE LOADER --- */
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('page-loader').classList.add('hide'), 500);
+    });
+
+    /* --- PARTICLES --- */
+    (function(){
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let W, H, pts = [];
+      function resize(){ W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+      resize(); window.addEventListener('resize', resize);
+      for(let i=0;i<60;i++) pts.push({
+        x: Math.random()*1920, y: Math.random()*1080,
+        vx:(Math.random()-0.5)*0.35, vy:(Math.random()-0.5)*0.35,
+        r: Math.random()*1.8+0.5, o: Math.random()*0.5+0.2
+      });
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        pts.forEach(p=>{
+          p.x+=p.vx; p.y+=p.vy;
+          if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+          if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle=`rgba(124,108,252,${p.o})`;
+          ctx.fill();
+        });
+        pts.forEach((a,i)=>{ pts.slice(i+1).forEach(b=>{
+          const d=Math.hypot(a.x-b.x,a.y-b.y);
+          if(d<140){
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+            ctx.strokeStyle=`rgba(124,108,252,${0.12*(1-d/140)})`;
+            ctx.lineWidth=0.7; ctx.stroke();
+          }
+        });});
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* --- TYPING EFFECT --- */
+    (function(){
+      const el = document.getElementById('hero-sub');
+      const text = 'BSc Computer Science Graduate · Cybersecurity Enthusiast · AI & Freelance Developer based in Salem, Tamil Nadu.';
+      let i = 0;
+      const cursor = document.createElement('span');
+      cursor.className = 'typed-cursor';
+      el.appendChild(cursor);
+      function type(){
+        if(i < text.length){
+          el.insertBefore(document.createTextNode(text[i++]), cursor);
+          setTimeout(type, 28);
+        }
+      }
+      setTimeout(type, 1200);
+    })();
+
+    /* --- SCROLL REVEAL (all types) --- */
+    const allReveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach((e, idx) => {
+        if(e.isIntersecting){
+          setTimeout(()=> e.target.classList.add('visible'), idx * 60);
+          revealObs.unobserve(e.target);
         }
       });
     }, { threshold: 0.1 });
-    reveals.forEach(el => observer.observe(el));
+    allReveals.forEach(el => revealObs.observe(el));
+
+    /* --- STAGGER SKILL CARDS --- */
+    document.querySelectorAll('.skills-grid .skill-card').forEach((el,i)=>{
+      el.style.transitionDelay = (i*80)+'ms';
+    });
+    document.querySelectorAll('.contact-info .contact-card').forEach((el,i)=>{
+      el.style.transitionDelay = (i*80)+'ms';
+    });
+
+    /* --- SECTION TITLE UNDERLINE --- */
+    const titleObs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('line-visible'); titleObs.unobserve(e.target); } });
+    }, {threshold: 0.5});
+    document.querySelectorAll('.section-title').forEach(el=> titleObs.observe(el));
+
+    /* --- NAV ACTIVE HIGHLIGHT ON SCROLL --- */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', ()=>{
+      let cur = '';
+      sections.forEach(s=>{ if(window.scrollY >= s.offsetTop - 120) cur = s.id; });
+      navLinks.forEach(a=>{
+        a.classList.remove('active');
+        if(a.getAttribute('href')==='#'+cur) a.classList.add('active');
+      });
+    });
 
     /* --- CONTACT FORM --- */
     const form = document.getElementById('contactForm');
